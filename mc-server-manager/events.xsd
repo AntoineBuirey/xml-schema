@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://forge-server-manager.local/events"
+           xmlns:tns="http://forge-server-manager.local/events"
+           elementFormDefault="qualified">
+
+  <!-- Root element definition -->
+  <xs:element name="events">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="namespace" type="tns:namespaceType" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Namespace type definition -->
+  <xs:complexType name="namespaceType">
+    <xs:sequence>
+      <xs:element name="event" type="tns:eventType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Event type definition -->
+  <xs:complexType name="eventType">
+    <xs:sequence>
+      <xs:element name="args" type="tns:argsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="return" type="tns:returnType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="id" type="tns:hexIdType" use="required"/>
+  </xs:complexType>
+
+  <!-- Arguments container type definition -->
+  <xs:complexType name="argsType">
+    <xs:sequence>
+      <xs:element name="arg" type="tns:argType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Single argument type definition -->
+  <xs:complexType name="argType">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="type" type="tns:dataType" use="required"/>
+    <xs:attribute name="id" type="tns:hexIdType" use="required"/>
+  </xs:complexType>
+
+  <!-- Return type definition -->
+  <xs:complexType name="returnType">
+    <xs:attribute name="type" type="tns:returnDataType" use="required"/>
+  </xs:complexType>
+
+  <!-- Hexadecimal ID type restriction -->
+  <xs:simpleType name="hexIdType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="0x[0-9A-Fa-f]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Data types for arguments -->
+  <xs:simpleType name="dataType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="datetime"/>
+      <xs:enumeration value="str"/>
+      <xs:enumeration value="bool"/>
+      <xs:enumeration value="int"/>
+      <xs:enumeration value="float"/>
+      <xs:enumeration value="Version"/>
+      <xs:enumeration value="list[str]"/>
+      <xs:enumeration value="list[Version]"/>
+      <xs:enumeration value="List[Dict[str, Any]]"/>
+      <xs:enumeration value="Dict[str, Any]"/>
+      <xs:enumeration value="Dict[Version, Dict[str, Any]]"/>
+      <xs:enumeration value="Any"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Return data types (includes None and other return-specific types) -->
+  <xs:simpleType name="returnDataType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None"/>
+      <xs:enumeration value="datetime"/>
+      <xs:enumeration value="str"/>
+      <xs:enumeration value="bool"/>
+      <xs:enumeration value="int"/>
+      <xs:enumeration value="float"/>
+      <xs:enumeration value="Version"/>
+      <xs:enumeration value="list[str]"/>
+      <xs:enumeration value="list[Version]"/>
+      <xs:enumeration value="List[Dict[str, Any]]"/>
+      <xs:enumeration value="Dict[str, Any]"/>
+      <xs:enumeration value="Dict[Version, Dict[str, Any]]"/>
+      <xs:enumeration value="Any"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
