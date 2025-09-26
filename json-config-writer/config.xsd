@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://json-config-writer/schema"
+           xmlns:tns="http://json-config-writer/schema"
+           elementFormDefault="qualified">
+
+    <!-- Root element -->
+    <xs:element name="elements">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="TextElement" type="tns:TextElementType"/>
+                <xs:element name="BooleanElement" type="tns:BooleanElementType"/>
+                <xs:element name="ChoiceElement" type="tns:ChoiceElementType"/>
+                <xs:element name="IntegerElement" type="tns:IntegerElementType"/>
+                <xs:element name="FloatElement" type="tns:FloatElementType"/>
+                <xs:element name="ColorElement" type="tns:ColorElementType"/>
+                <xs:element name="DirectoryPathElement" type="tns:DirectoryPathElementType"/>
+                <xs:element name="FilePathElement" type="tns:FilePathElementType"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Text element type -->
+    <xs:complexType name="TextElementType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:string" use="optional"/>
+        <xs:attribute name="min_length" type="xs:nonNegativeInteger" use="optional" default="0"/>
+        <xs:attribute name="max_length" type="xs:integer" use="optional" default="-1"/>
+        <xs:attribute name="allowed_chars" type="xs:string" use="optional" default="a-zA-Z0-9_.-"/>
+    </xs:complexType>
+
+    <!-- Boolean element type -->
+    <xs:complexType name="BooleanElementType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+
+    <!-- Choice element type -->
+    <xs:complexType name="ChoiceElementType">
+        <xs:sequence>
+            <xs:element name="Choice" type="tns:ChoiceType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <!-- Choice type for individual choice options -->
+    <xs:complexType name="ChoiceType">
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <!-- Integer element type -->
+    <xs:complexType name="IntegerElementType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:integer" use="optional" default="0"/>
+        <xs:attribute name="min" type="xs:integer" use="optional"/>
+        <xs:attribute name="max" type="xs:integer" use="optional"/>
+    </xs:complexType>
+
+    <!-- Float element type -->
+    <xs:complexType name="FloatElementType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:double" use="optional" default="0.0"/>
+        <xs:attribute name="min" type="xs:double" use="optional"/>
+        <xs:attribute name="max" type="xs:double" use="optional"/>
+    </xs:complexType>
+
+    <!-- Color element type (hex color pattern) -->
+    <xs:complexType name="ColorElementType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" use="optional" default="#000000">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <!-- Directory path element type -->
+    <xs:complexType name="DirectoryPathElementType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:string" use="optional" default=""/>
+    </xs:complexType>
+
+    <!-- File path element type -->
+    <xs:complexType name="FilePathElementType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:string" use="optional" default=""/>
+    </xs:complexType>
+
+</xs:schema>
