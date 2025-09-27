@@ -22,6 +22,7 @@
 
     <!-- Text element type -->
     <xs:complexType name="TextElementType">
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:string" use="optional"/>
         <xs:attribute name="min_length" type="xs:nonNegativeInteger" use="optional" default="0"/>
@@ -31,6 +32,7 @@
 
     <!-- Boolean element type -->
     <xs:complexType name="BooleanElementType">
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
@@ -40,6 +42,7 @@
         <xs:sequence>
             <xs:element name="Choice" type="tns:ChoiceType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:string" use="optional"/>
     </xs:complexType>
@@ -51,6 +54,7 @@
 
     <!-- Integer element type -->
     <xs:complexType name="IntegerElementType">
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:integer" use="optional" default="0"/>
         <xs:attribute name="min" type="xs:integer" use="optional"/>
@@ -59,6 +63,7 @@
 
     <!-- Float element type -->
     <xs:complexType name="FloatElementType">
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:double" use="optional" default="0.0"/>
         <xs:attribute name="min" type="xs:double" use="optional"/>
@@ -67,6 +72,7 @@
 
     <!-- Color element type (hex color pattern) -->
     <xs:complexType name="ColorElementType">
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" use="optional" default="#000000">
             <xs:simpleType>
@@ -79,12 +85,14 @@
 
     <!-- Directory path element type -->
     <xs:complexType name="DirectoryPathElementType">
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:string" use="optional" default=""/>
     </xs:complexType>
 
     <!-- File path element type -->
     <xs:complexType name="FilePathElementType">
+        <xs:attribute name="tag" type="xs:string" use="required"/>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:string" use="optional" default=""/>
     </xs:complexType>
