@@ -97,4 +97,18 @@
         <xs:attribute name="default" type="xs:string" use="optional" default=""/>
     </xs:complexType>
 
+        <!-- list element type -->
+    <xs:complexType name="ListElementType">
+        <xs:sequence>
+            <xs:element name="Default" type="tns:DefaultType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="tag" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <!-- Dafault item type for ListElement -->
+    <xs:complexType name="DefaultType">
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
 </xs:schema>
