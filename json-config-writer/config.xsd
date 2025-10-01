@@ -16,6 +16,7 @@
                 <xs:element name="ColorElement" type="tns:ColorElementType"/>
                 <xs:element name="DirectoryPathElement" type="tns:DirectoryPathElementType"/>
                 <xs:element name="FilePathElement" type="tns:FilePathElementType"/>
+                <xs:element name="ListElement" type="tns:ListElementType"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
