@@ -4,112 +4,214 @@
            xmlns:tns="http://json-config-writer/schema"
            elementFormDefault="qualified">
 
+    <!-- =============================================== -->
+    <!-- COMMON TYPES AND PATTERNS                       -->
+    <!-- =============================================== -->
+
+    <!-- Base attribute group for all configuration elements -->
+    <xs:attributeGroup name="BaseElementAttributes">
+        <xs:attribute name="tag" type="tns:TagType" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:attributeGroup>
+
+    <!-- Tag type with validation pattern -->
+    <xs:simpleType name="TagType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-z][a-z0-9_]*"/>
+            <xs:minLength value="1"/>
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Hex color type -->
+    <xs:simpleType name="HexColorType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Regex pattern type for allowed characters -->
+    <xs:simpleType name="RegexPatternType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- =============================================== -->
+    <!-- GROUPS AND ROOT ELEMENT                         -->
+    <!-- =============================================== -->
+
+    <!-- Reusable group for all configuration elements -->
+    <xs:group name="ConfigurationElements">
+        <xs:choice>
+            <xs:element name="TextElement" type="tns:TextElementType"/>
+            <xs:element name="BooleanElement" type="tns:BooleanElementType"/>
+            <xs:element name="ChoiceElement" type="tns:ChoiceElementType"/>
+            <xs:element name="IntegerElement" type="tns:IntegerElementType"/>
+            <xs:element name="FloatElement" type="tns:FloatElementType"/>
+            <xs:element name="ColorElement" type="tns:ColorElementType"/>
+            <xs:element name="DirectoryPathElement" type="tns:DirectoryPathElementType"/>
+            <xs:element name="FilePathElement" type="tns:FilePathElementType"/>
+            <xs:element name="ListElement" type="tns:ListElementType"/>
+            <xs:element name="SubCategoryElement" type="tns:SubCategoryElementType"/>
+        </xs:choice>
+    </xs:group>
+
     <!-- Root element -->
     <xs:element name="elements">
+        <xs:annotation>
+            <xs:documentation>Root element containing configuration elements</xs:documentation>
+        </xs:annotation>
         <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="TextElement" type="tns:TextElementType"/>
-                <xs:element name="BooleanElement" type="tns:BooleanElementType"/>
-                <xs:element name="ChoiceElement" type="tns:ChoiceElementType"/>
-                <xs:element name="IntegerElement" type="tns:IntegerElementType"/>
-                <xs:element name="FloatElement" type="tns:FloatElementType"/>
-                <xs:element name="ColorElement" type="tns:ColorElementType"/>
-                <xs:element name="DirectoryPathElement" type="tns:DirectoryPathElementType"/>
-                <xs:element name="FilePathElement" type="tns:FilePathElementType"/>
-                <xs:element name="ListElement" type="tns:ListElementType"/>
-            </xs:choice>
+            <xs:group ref="tns:ConfigurationElements" minOccurs="0" maxOccurs="unbounded"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- =============================================== -->
+    <!-- ELEMENT TYPES                                   -->
+    <!-- =============================================== -->
+
     <!-- Text element type -->
     <xs:complexType name="TextElementType">
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:annotation>
+            <xs:documentation>Text input field with validation constraints</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
         <xs:attribute name="default" type="xs:string" use="optional"/>
         <xs:attribute name="min_length" type="xs:nonNegativeInteger" use="optional" default="0"/>
-        <xs:attribute name="max_length" type="xs:integer" use="optional" default="-1"/>
-        <xs:attribute name="allowed_chars" type="xs:string" use="optional" default="a-zA-Z0-9_.-"/>
+        <xs:attribute name="max_length" use="optional" default="-1">
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:minInclusive value="-1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="allowed_chars" type="tns:RegexPatternType" use="optional" default="a-zA-Z0-9_.-"/>
+        <xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
     <!-- Boolean element type -->
     <xs:complexType name="BooleanElementType">
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:annotation>
+            <xs:documentation>Boolean checkbox or toggle element</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
         <xs:attribute name="default" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
     <!-- Choice element type -->
     <xs:complexType name="ChoiceElementType">
+        <xs:annotation>
+            <xs:documentation>Dropdown or radio button selection element</xs:documentation>
+        </xs:annotation>
         <xs:sequence>
             <xs:element name="Choice" type="tns:ChoiceType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
         <xs:attribute name="default" type="xs:string" use="optional"/>
+        <xs:attribute name="multiple" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
     <!-- Choice type for individual choice options -->
     <xs:complexType name="ChoiceType">
         <xs:attribute name="value" type="xs:string" use="required"/>
+        <xs:attribute name="label" type="xs:string" use="optional"/>
+        <xs:attribute name="disabled" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
     <!-- Integer element type -->
     <xs:complexType name="IntegerElementType">
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:annotation>
+            <xs:documentation>Integer number input with range validation</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
         <xs:attribute name="default" type="xs:integer" use="optional" default="0"/>
         <xs:attribute name="min" type="xs:integer" use="optional"/>
         <xs:attribute name="max" type="xs:integer" use="optional"/>
+        <xs:attribute name="step" type="xs:positiveInteger" use="optional" default="1"/>
     </xs:complexType>
 
     <!-- Float element type -->
     <xs:complexType name="FloatElementType">
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:annotation>
+            <xs:documentation>Floating-point number input with range and precision validation</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
         <xs:attribute name="default" type="xs:double" use="optional" default="0.0"/>
         <xs:attribute name="min" type="xs:double" use="optional"/>
         <xs:attribute name="max" type="xs:double" use="optional"/>
+        <xs:attribute name="step" type="xs:double" use="optional" default="0.01"/>
+        <xs:attribute name="precision" type="xs:nonNegativeInteger" use="optional" default="2"/>
     </xs:complexType>
 
-    <!-- Color element type (hex color pattern) -->
+    <!-- Color element type -->
     <xs:complexType name="ColorElementType">
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="default" use="optional" default="#000000">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:annotation>
+            <xs:documentation>Color picker element with hex color validation</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
+        <xs:attribute name="default" type="tns:HexColorType" use="optional" default="#000000"/>
+        <xs:attribute name="allow_alpha" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
     <!-- Directory path element type -->
     <xs:complexType name="DirectoryPathElementType">
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:annotation>
+            <xs:documentation>Directory path selection element</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
         <xs:attribute name="default" type="xs:string" use="optional" default=""/>
+        <xs:attribute name="must_exist" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="create_if_missing" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
     <!-- File path element type -->
     <xs:complexType name="FilePathElementType">
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:annotation>
+            <xs:documentation>File path selection element</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
         <xs:attribute name="default" type="xs:string" use="optional" default=""/>
+        <xs:attribute name="extensions" type="xs:string" use="optional"/>
+        <xs:attribute name="must_exist" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="save_dialog" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
-        <!-- list element type -->
+    <!-- List element type -->
     <xs:complexType name="ListElementType">
+        <xs:annotation>
+            <xs:documentation>Dynamic list element with default values</xs:documentation>
+        </xs:annotation>
         <xs:sequence>
             <xs:element name="Default" type="tns:DefaultType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="tag" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
+        <xs:attribute name="min_items" type="xs:nonNegativeInteger" use="optional" default="0"/>
+        <xs:attribute name="max_items" type="xs:integer" use="optional" default="-1"/>
+        <xs:attribute name="allow_duplicates" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
-    <!-- Dafault item type for ListElement -->
+    <!-- Default item type for ListElement -->
     <xs:complexType name="DefaultType">
+        <xs:annotation>
+            <xs:documentation>Default value item for list elements</xs:documentation>
+        </xs:annotation>
         <xs:attribute name="value" type="xs:string" use="required"/>
+        <xs:attribute name="label" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <!-- SubCategory element type -->
+    <xs:complexType name="SubCategoryElementType">
+        <xs:annotation>
+            <xs:documentation>Hierarchical category container for nested configuration elements</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tns:ConfigurationElements" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="tns:BaseElementAttributes"/>
+        <xs:attribute name="collapsible" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="expanded" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="icon" type="xs:string" use="optional"/>
     </xs:complexType>
 
 </xs:schema>
