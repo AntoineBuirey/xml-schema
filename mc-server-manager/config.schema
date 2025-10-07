@@ -1,0 +1,86 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "minecraft_servers_dirs": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "server_config_path": {
+            "type": "string"
+        },
+        "client_database_path": {
+            "type": "string"
+        },
+        "user_interface_modules": {
+            "type": "object",
+            "properties": {
+                "web": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "port": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 65535
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "enabled",
+                        "port"
+                    ]
+                },
+                "tk_window": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "enabled"
+                    ]
+                }
+            },
+            "required": []
+        },
+        "bus": {
+            "type": "object",
+            "properties": {
+                "memory_size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 8
+                },
+                "max_string_length": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 8192
+                }
+            },
+            "required": [
+                "memory_size",
+                "max_string_length"
+            ]
+        }
+    },
+    "required": [
+        "minecraft_servers_dirs",
+        "server_config_path",
+        "client_database_path",
+        "user_interface_modules",
+        "bus"
+    ]
+}
