@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://forge-server-manager.local/properties"
+           xmlns="http://forge-server-manager.local/properties"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!-- Root element -->
+  <xs:element name="properties">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- Zero or more property definitions of various types -->
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="boolean" type="propertyType"/>
+          <xs:element name="integer" type="integerPropertyType"/>
+          <xs:element name="string" type="propertyType"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Generic property type used for boolean/string and other simple typed properties -->
+  <xs:complexType name="propertyType">
+    <xs:sequence>
+      <xs:element name="option" type="optionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="default" type="xs:string" use="optional"/>
+    <xs:attribute name="doc" type="xs:string" use="optional"/>
+    <xs:attribute name="introduced" type="versionType" use="optional"/>
+  </xs:complexType>
+
+  <!-- Integer property extends generic property with min/max attributes -->
+  <xs:complexType name="integerPropertyType">
+    <xs:complexContent>
+      <xs:extension base="propertyType">
+        <xs:attribute name="min" type="xs:long" use="optional"/>
+        <xs:attribute name="max" type="xs:long" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- Option element type -->
+  <xs:complexType name="optionType" mixed="false">
+    <xs:attribute name="label" type="xs:string" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+    <xs:attribute name="introduced" type="versionType" use="optional"/>
+    <xs:attribute name="until" type="versionType" use="optional"/>
+  </xs:complexType>
+
+  <!-- Version simple type, basic pattern like 1.13.0 or similar -->
+  <xs:simpleType name="versionType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]+(\.[0-9]+)*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
